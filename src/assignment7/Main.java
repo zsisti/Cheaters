@@ -1,8 +1,12 @@
 package assignment7;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
 
@@ -14,7 +18,7 @@ public class Main {
         int n = Integer.valueOf(sc.next());
 
         File folder = null;
-        Scanner infile = null;
+        File infile = null;
         try{
             folder = new File(directory);
         }
@@ -25,28 +29,36 @@ public class Main {
         ArrayList<Sequence> allSeqs = new ArrayList<Sequence>();
         for(String i : essays){
             try{
-                infile = new Scanner(new File(folder+ "/" + i));
+                infile = new File(directory + "\\" + i);
+                BufferedReader br = new BufferedReader(new FileReader(infile));
+                ArrayList<String> docWords = new ArrayList<String>();
+                String line = br.readLine();
+                while(line != null){
+                    Pattern p = Pattern.compile("[\\w':\\-]+");
+                    Matcher m = p.matcher(line);
+                    while(m.find()){
+                        docWords.add(m.group());
+                    }
+                    line = br.readLine();
+                    int pppp = 234;
+                }
+                int j=0;
+                while(j+n <= docWords.size()){
+                    ArrayList<String> newArr = new ArrayList<String>();
+                    for(int k=0; k<n; k++){
+                        newArr.add(docWords.get(j+k));
+                    }
+                    Sequence newSeq = new Sequence(newArr, i);
+                    allSeqs.add(newSeq);
+                    j++;
+                }
             }
-            catch(FileNotFoundException e){
+            catch(Exception e){
                 System.out.println(e);
             }
-            ArrayList<String> docWords = new ArrayList<String>();
-            while(infile.hasNext()){
-                docWords.add(infile.next());
-            }
-            int j=0;
-            while(j+n <= docWords.size()){
-                ArrayList<String> newArr = new ArrayList<String>();
-                for(int k=0; k<n; k++){
-                    newArr.add(docWords.get(j+k));
-                }
-                Sequence newSeq = new Sequence(newArr, i);
-                allSeqs.add(newSeq);
-                j++;
-            }
         }
-        for (Sequence s : allSeqs){
-            System.out.println(s.getWords());
+        for (int i=0; i<allSeqs.size(); i++){
+            System.out.println(allSeqs.get(i).getWords());
         }
     }
 }
